@@ -7,9 +7,9 @@ const JoinLobby = (props) => {
   const [userId, setUserId] = useState("");
 
   const [game, setGame] = useState("")
-  const []
-  const []
-  const []
+  const [title, setTitle] = useState("")
+  const [limit, setLimit] = useState(1)
+  const [platform, setPlatform] = useState("")
 
   const [makingLobby, setMakingLobby] = useState(false)
   let z = makingLobby;
@@ -20,11 +20,16 @@ const JoinLobby = (props) => {
   useEffect(() => {
     axios
       .all([requestUser, requestLobby])
-      .then((response) => {
-        setUsername(response.data.username)
-        setEmail(response.data.email)
-        setUserId(id)
-      })
+      .then(axios.spread((...responses) => {
+        setUsername(responses[0].data.username)
+        setEmail(responses[0].data.email)
+        setUserId(responses[0].data._id)
+
+        setGame(responses[1].data.game)
+        setTitle(responses[1].data.title)
+        setLimit(responses[1].data.limit)
+        setPlatform(responses[1].data.platform)
+      }))
       .catch((err) => {
         setErrors(err.response)
       })
